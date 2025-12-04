@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
+
 namespace memomachka
 {
     public partial class Form1 : Form
@@ -18,10 +19,17 @@ namespace memomachka
         private int parovi;
         private bool flagWait;
 
+        private const int SIRINA = 4;
+        private const int VISINA = 3;
+        private const int PAROVI = (SIRINA * VISINA) / 2;
+
         Random brojGen;
         public Form1()
         {
             InitializeComponent();
+            DoubleBuffered = true;
+            Width = SIRINA * 150 + 50;
+            Height = (VISINA + 1) * 150;
 
             potezUToku = false;
             parovi = 0;
@@ -29,16 +37,17 @@ namespace memomachka
             flagWait = false;
 
             slika = new Image[7];
-            slikaDugme = new int[6];
+            slikaDugme = new int[SIRINA * VISINA];
             brojGen = new Random();
-            otvorenaPolja = new bool[6];
+            otvorenaPolja = new bool[SIRINA * VISINA];
 
-            for (int i = 0; i < 6; i++) otvorenaPolja[i] = false;
+            for (int i = 0; i < SIRINA * VISINA; i++) otvorenaPolja[i] = false;
 
             int pom1, pom2, pom3;
-            bool[] iskoristene = { false, false, false, false, false, false };
+            bool[] iskoristene = new bool[SIRINA * VISINA];
+            for (int i = 0; i < SIRINA * VISINA; i++) iskoristene[i] = false;
             bool[] iskoristeneSlike = { false, false, false, false, false, false, false };
-            
+
             slika[0] = Properties.Resources.m1;
             slika[1] = Properties.Resources.m2;
             slika[2] = Properties.Resources.m3;
@@ -47,18 +56,18 @@ namespace memomachka
             slika[5] = Properties.Resources.m6;
             slika[6] = Properties.Resources.m7;
 
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < SIRINA * VISINA / 2; i++)
             {
                 do
                 {
-                    pom1 = brojGen.Next(1, 7);
+                    pom1 = brojGen.Next(1, SIRINA * VISINA + 1);
                 } while (iskoristene[pom1 - 1] == true);
 
                 iskoristene[pom1 - 1] = true;
 
                 do
                 {
-                    pom2 = brojGen.Next(1, 7);
+                    pom2 = brojGen.Next(1, SIRINA * VISINA + 1);
                 } while (iskoristene[pom2 - 1] == true);
 
                 iskoristene[pom2 - 1] = true;
@@ -74,7 +83,7 @@ namespace memomachka
                 slikaDugme[pom2 - 1] = pom3 - 1;
             }
 
-
+            button2.Location = new Point(150 * SIRINA - 30, 150 * VISINA + 95);
 
         }
 
@@ -89,7 +98,7 @@ namespace memomachka
             }
             else
             {
-                if (slikaDugme[trenutni - 1] == slikaDugme[prethodni - 1]) { if (++parovi == 3) MessageBox.Show("Игра је завршена :)"); }
+                if (slikaDugme[trenutni - 1] == slikaDugme[prethodni - 1]) { if (++parovi == PAROVI) MessageBox.Show("Игра је завршена :)"); }
                 else
                 {
                     flagWait = true;
@@ -102,7 +111,7 @@ namespace memomachka
 
                 potezUToku = false;
             }
-            
+
         }
         private void Form1_Click(object sender, EventArgs e)
         {
@@ -114,11 +123,11 @@ namespace memomachka
                 int dugmeY = (MousePosition.Y - Location.Y) / 150;
                 int dugmeYOst = (MousePosition.Y - Location.Y) % 150;
 
-                bool jeLiDugme = ((dugmeXOst > 50 && dugmeYOst > 50) && (dugmeX < 3 && dugmeY < 2) ? true : false);
+                bool jeLiDugme = ((dugmeXOst > 50 && dugmeYOst > 50) ? true : false);
 
                 if (jeLiDugme)
                 {
-                    trenutni = 3 * (dugmeY) + dugmeX + 1;
+                    trenutni = SIRINA * (dugmeY) + dugmeX + 1;
                     if (trenutni != prethodni) klik();
                 }
             }
@@ -128,17 +137,50 @@ namespace memomachka
         {
             Graphics GFX = e.Graphics;
 
-            for (int i = 0; i < 3; i++) for (int j = 0; j < 2; j++)
+            for (int i = 0; i < SIRINA; i++) for (int j = 0; j < VISINA; j++)
                 {
-                    if (!otvorenaPolja[3*j + i])
+                    if (!otvorenaPolja[SIRINA * j + i])
                     {
-                        GFX.DrawImage(Properties.Resources.b, new Point((i * 150 + 50), (j * 150 + 50)));
+                        GFX.DrawImage(Properties.Resources.b, new Rectangle((i * 150 + 50), (j * 150 + 50), 100, 100));
                     }
                     else
                     {
-                        GFX.DrawImage(slika[slikaDugme[3*j + i]], new Rectangle((i * 150 + 50), (j * 150 + 50), 100, 100));
+                        GFX.DrawImage(slika[slikaDugme[SIRINA * j + i]], new Rectangle((i * 150 + 50), (j * 150 + 50), 100, 100));
                     }
+
+                    GFX.DrawImage(Image.FromStream(new MemoryStream(Properties.Resources.tb2)), new Rectangle(0, (VISINA * 150 + 50), Width, 150));
+                    GFX.DrawImage(Properties.Resources.t, new Rectangle(10, (VISINA * 150 + 50), 330, 120));
+                    //GFX.DrawImage(Properties.Resources.maca, new Point((SIRINA * 150 - 50), (VISINA * 150 + 50)));
                 }
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button1_MouseDown(object sender, MouseEventArgs e)
+        {
+            Point tacka = new Point();
+            int dx = MousePosition.X - Location.X;
+            int dy = MousePosition.Y - Location.Y;
+            while ((Control.MouseButtons & MouseButtons.Left) != 0)
+            {
+                Application.DoEvents();
+                tacka.X = MousePosition.X - dy;
+                tacka.Y = MousePosition.Y - dx;
+                Location = tacka;
+            }
+        }
+
+        private void button2_MouseEnter(object sender, EventArgs e)
+        {
+            button2.BackgroundImage = Properties.Resources.close2;
+        }
+
+        private void button2_MouseLeave(object sender, EventArgs e)
+        {
+            button2.BackgroundImage = Properties.Resources.close1;
         }
     }
 
