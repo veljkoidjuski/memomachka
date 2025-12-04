@@ -9,44 +9,36 @@ namespace memomachka
     {
 
         private Image[] slika;
-        private Button[] dugmad;
         private int[] slikaDugme;
+        private bool[] otvorenaPolja;
 
         private bool potezUToku;
         private int trenutni;
         private int prethodni;
         private int parovi;
+        private bool flagWait;
 
         Random brojGen;
-
-        // private Graphics GFX;
         public Form1()
         {
             InitializeComponent();
-            // GFX = CreateGraphics();
 
             potezUToku = false;
             parovi = 0;
-            prethodni = 1;
+            prethodni = -1;
+            flagWait = false;
 
             slika = new Image[7];
-            dugmad = new Button[6];
             slikaDugme = new int[6];
             brojGen = new Random();
+            otvorenaPolja = new bool[6];
+
+            for (int i = 0; i < 6; i++) otvorenaPolja[i] = false;
 
             int pom1, pom2, pom3;
             bool[] iskoristene = { false, false, false, false, false, false };
             bool[] iskoristeneSlike = { false, false, false, false, false, false, false };
-
-            dugmad[0] = button1;
-            dugmad[1] = button2;
-            dugmad[2] = button3;
-            dugmad[3] = button4;
-            dugmad[4] = button5;
-            dugmad[5] = button6;
-
-            // for(int i = 0; i<3; i++) for(int j = 0; j<3; j++)
-
+            
             slika[0] = Properties.Resources.m1;
             slika[1] = Properties.Resources.m2;
             slika[2] = Properties.Resources.m3;
@@ -82,13 +74,14 @@ namespace memomachka
                 slikaDugme[pom2 - 1] = pom3 - 1;
             }
 
-            
+
 
         }
 
         async void klik()
         {
-            dugmad[trenutni - 1].BackgroundImage = slika[slikaDugme[trenutni - 1]];
+            otvorenaPolja[trenutni - 1] = true;
+            Refresh();
             if (!potezUToku)
             {
                 potezUToku = true;
@@ -99,33 +92,53 @@ namespace memomachka
                 if (slikaDugme[trenutni - 1] == slikaDugme[prethodni - 1]) { if (++parovi == 3) MessageBox.Show("Игра је завршена :)"); }
                 else
                 {
-                    for (int i = 0; i < 6; i++) dugmad[i].Enabled = false;
+                    flagWait = true;
                     await Task.Delay(1000);
-                    dugmad[trenutni - 1].BackgroundImage = null;
-                    dugmad[prethodni - 1].BackgroundImage = null;
-                    for (int i = 0; i < 6; i++) dugmad[i].Enabled = true;
+                    otvorenaPolja[trenutni - 1] = false;
+                    otvorenaPolja[prethodni - 1] = false;
+                    Refresh();
+                    flagWait = false;
                 }
 
                 potezUToku = false;
             }
+            
         }
         private void Form1_Click(object sender, EventArgs e)
         {
-            int dugmeX = (MousePosition.X-Location.X) / 150;
-            int dugmeXOst = (MousePosition.X-Location.X) % 150;
-
-            int dugmeY = (MousePosition.Y-Location.Y) / 150;
-            int dugmeYOst = (MousePosition.Y-Location.Y) % 150;
-
-            Debug.WriteLine("{0} {1} {2} {3}", dugmeX, dugmeXOst, dugmeY, dugmeYOst);
-
-            bool jeLiDugme = ((dugmeXOst > 50 && dugmeYOst > 50) && (dugmeX < 3 && dugmeY < 2) ? true : false);
-
-            if (jeLiDugme)
+            if (!flagWait)
             {
-                trenutni = 3 * (dugmeY) + dugmeX + 1;
-                klik();
+                int dugmeX = (MousePosition.X - Location.X) / 150;
+                int dugmeXOst = (MousePosition.X - Location.X) % 150;
+
+                int dugmeY = (MousePosition.Y - Location.Y) / 150;
+                int dugmeYOst = (MousePosition.Y - Location.Y) % 150;
+
+                bool jeLiDugme = ((dugmeXOst > 50 && dugmeYOst > 50) && (dugmeX < 3 && dugmeY < 2) ? true : false);
+
+                if (jeLiDugme)
+                {
+                    trenutni = 3 * (dugmeY) + dugmeX + 1;
+                    if (trenutni != prethodni) klik();
+                }
             }
+        }
+
+        private void Form1_Paint(object sender, PaintEventArgs e)
+        {
+            Graphics GFX = e.Graphics;
+
+            for (int i = 0; i < 3; i++) for (int j = 0; j < 2; j++)
+                {
+                    if (!otvorenaPolja[3*j + i])
+                    {
+                        GFX.DrawImage(Properties.Resources.b, new Point((i * 150 + 50), (j * 150 + 50)));
+                    }
+                    else
+                    {
+                        GFX.DrawImage(slika[slikaDugme[3*j + i]], new Rectangle((i * 150 + 50), (j * 150 + 50), 100, 100));
+                    }
+                }
         }
     }
 
