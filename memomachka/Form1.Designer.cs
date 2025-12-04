@@ -35,6 +35,7 @@
             button4 = new Button();
             button5 = new Button();
             button6 = new Button();
+            button7 = new Button();
             SuspendLayout();
             // 
             // button1
@@ -47,7 +48,6 @@
             button1.Size = new Size(100, 100);
             button1.TabIndex = 0;
             button1.UseVisualStyleBackColor = false;
-            button1.Click += button1_Click;
             // 
             // button2
             // 
@@ -58,7 +58,6 @@
             button2.Size = new Size(100, 100);
             button2.TabIndex = 1;
             button2.UseVisualStyleBackColor = false;
-            button2.Click += button2_Click;
             // 
             // button3
             // 
@@ -69,18 +68,16 @@
             button3.Size = new Size(100, 100);
             button3.TabIndex = 2;
             button3.UseVisualStyleBackColor = false;
-            button3.Click += button3_Click;
             // 
             // button4
             // 
             button4.BackColor = Color.FromArgb(207, 194, 201);
             button4.FlatStyle = FlatStyle.Flat;
-            button4.Location = new Point(350, 200);
+            button4.Location = new Point(50, 200);
             button4.Name = "button4";
             button4.Size = new Size(100, 100);
             button4.TabIndex = 3;
             button4.UseVisualStyleBackColor = false;
-            button4.Click += button4_Click;
             // 
             // button5
             // 
@@ -91,18 +88,25 @@
             button5.Size = new Size(100, 100);
             button5.TabIndex = 4;
             button5.UseVisualStyleBackColor = false;
-            button5.Click += button5_Click;
             // 
             // button6
             // 
             button6.BackColor = Color.FromArgb(207, 194, 201);
             button6.FlatStyle = FlatStyle.Flat;
-            button6.Location = new Point(50, 200);
+            button6.Location = new Point(350, 200);
             button6.Name = "button6";
             button6.Size = new Size(100, 100);
             button6.TabIndex = 5;
             button6.UseVisualStyleBackColor = false;
-            button6.Click += button6_Click;
+            // 
+            // button7
+            // 
+            button7.Location = new Point(12, 12);
+            button7.Name = "button7";
+            button7.Size = new Size(94, 29);
+            button7.TabIndex = 6;
+            button7.Text = "button7";
+            button7.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
@@ -110,6 +114,7 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(25, 1, 36);
             ClientSize = new Size(507, 353);
+            Controls.Add(button7);
             Controls.Add(button6);
             Controls.Add(button5);
             Controls.Add(button4);
@@ -121,6 +126,7 @@
             MdiChildrenMinimizedAnchorBottom = false;
             Name = "Form1";
             Text = "memomachka ";
+            Click += Form1_Click;
             ResumeLayout(false);
         }
 
@@ -132,5 +138,6 @@
         private Button button4;
         private Button button5;
         private Button button6;
+        private Button button7;
     }
 }

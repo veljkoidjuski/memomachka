@@ -8,19 +8,23 @@ namespace memomachka
     public partial class Form1 : Form
     {
 
-        Image[] slika;
-        Button[] dugmad;
-        int[] slikaDugme;
+        private Image[] slika;
+        private Button[] dugmad;
+        private int[] slikaDugme;
 
         private bool potezUToku;
-        int trenutni;
-        int prethodni;
-        int parovi;
+        private int trenutni;
+        private int prethodni;
+        private int parovi;
 
         Random brojGen;
+
+        // private Graphics GFX;
         public Form1()
         {
             InitializeComponent();
+            // GFX = CreateGraphics();
+
             potezUToku = false;
             parovi = 0;
             prethodni = 1;
@@ -41,6 +45,8 @@ namespace memomachka
             dugmad[4] = button5;
             dugmad[5] = button6;
 
+            // for(int i = 0; i<3; i++) for(int j = 0; j<3; j++)
+
             slika[0] = Properties.Resources.m1;
             slika[1] = Properties.Resources.m2;
             slika[2] = Properties.Resources.m3;
@@ -51,7 +57,8 @@ namespace memomachka
 
             for (int i = 0; i < 3; i++)
             {
-                do {
+                do
+                {
                     pom1 = brojGen.Next(1, 7);
                 } while (iskoristene[pom1 - 1] == true);
 
@@ -75,71 +82,51 @@ namespace memomachka
                 slikaDugme[pom2 - 1] = pom3 - 1;
             }
 
-
+            
 
         }
 
         async void klik()
         {
-            dugmad[trenutni-1].BackgroundImage = slika[slikaDugme[trenutni-1]];
+            dugmad[trenutni - 1].BackgroundImage = slika[slikaDugme[trenutni - 1]];
             if (!potezUToku)
             {
                 potezUToku = true;
                 prethodni = trenutni;
             }
             else
-            { 
-                if (slikaDugme[trenutni-1] == slikaDugme[prethodni-1]) { if (++parovi == 3) MessageBox.Show("Игра је завршена :)"); }
+            {
+                if (slikaDugme[trenutni - 1] == slikaDugme[prethodni - 1]) { if (++parovi == 3) MessageBox.Show("Игра је завршена :)"); }
                 else
                 {
                     for (int i = 0; i < 6; i++) dugmad[i].Enabled = false;
                     await Task.Delay(1000);
-                    dugmad[trenutni-1].BackgroundImage = null;
-                    dugmad[prethodni-1].BackgroundImage = null;
+                    dugmad[trenutni - 1].BackgroundImage = null;
+                    dugmad[prethodni - 1].BackgroundImage = null;
                     for (int i = 0; i < 6; i++) dugmad[i].Enabled = true;
                 }
 
                 potezUToku = false;
             }
         }
-
-        private async void button3_Click(object sender, EventArgs e)
+        private void Form1_Click(object sender, EventArgs e)
         {
-            trenutni = 3;
-            klik();
-        }
+            int dugmeX = (MousePosition.X-Location.X) / 150;
+            int dugmeXOst = (MousePosition.X-Location.X) % 150;
 
-        private async void button4_Click(object sender, EventArgs e)
-        {
-            trenutni = 4;
-            klik();
-        }
+            int dugmeY = (MousePosition.Y-Location.Y) / 150;
+            int dugmeYOst = (MousePosition.Y-Location.Y) % 150;
 
-        private async void button1_Click(object sender, EventArgs e)
-        {
-            trenutni = 1;
-            klik();
-        }
+            Debug.WriteLine("{0} {1} {2} {3}", dugmeX, dugmeXOst, dugmeY, dugmeYOst);
 
-        private async void button2_Click(object sender, EventArgs e)
-        {
-            trenutni = 2;
-            klik();
-        }
+            bool jeLiDugme = ((dugmeXOst > 50 && dugmeYOst > 50) && (dugmeX < 3 && dugmeY < 2) ? true : false);
 
-        private async void button5_Click(object sender, EventArgs e)
-        {
-            trenutni = 5;
-            klik();
+            if (jeLiDugme)
+            {
+                trenutni = 3 * (dugmeY) + dugmeX + 1;
+                klik();
+            }
         }
-
-        private async void button6_Click(object sender, EventArgs e)
-        {
-            trenutni = 6;
-            klik();
-        }
-
-        
     }
 
 
