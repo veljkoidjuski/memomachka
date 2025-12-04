@@ -175,12 +175,17 @@ namespace memomachka
 
         private void button2_MouseEnter(object sender, EventArgs e)
         {
-            button2.BackgroundImage = Properties.Resources.close2;
+            button2.BackgroundImage = Properties.Resources.close21;
         }
 
         private void button2_MouseLeave(object sender, EventArgs e)
         {
-            button2.BackgroundImage = Properties.Resources.close1;
+            button2.BackgroundImage = Properties.Resources.close11;
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
         }
     }
 

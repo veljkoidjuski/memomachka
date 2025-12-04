@@ -49,17 +49,21 @@
             // 
             // button2
             // 
-            button2.BackgroundImage = Properties.Resources.close1;
+            button2.BackColor = Color.Transparent;
+            button2.BackgroundImage = Properties.Resources.close11;
             button2.BackgroundImageLayout = ImageLayout.Stretch;
             button2.FlatAppearance.BorderSize = 0;
+            button2.FlatAppearance.MouseOverBackColor = Color.Transparent;
             button2.FlatStyle = FlatStyle.Flat;
             button2.Location = new Point(402, 223);
             button2.Name = "button2";
             button2.Size = new Size(30, 30);
             button2.TabIndex = 1;
-            button2.UseVisualStyleBackColor = true;
+            button2.UseVisualStyleBackColor = false;
+            button2.Click += button2_Click;
             button2.MouseEnter += button2_MouseEnter;
             button2.MouseLeave += button2_MouseLeave;
+            button2.FlatAppearance.MouseDownBackColor = Color.Transparent;
             // 
             // Form1
             // 
